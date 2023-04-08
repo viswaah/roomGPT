@@ -17,3 +17,14 @@
     pointer-events: none;
   }
 }
+
+.user-dropdown {
+  transition: all .3s ease-in;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.user-dropdown.show {
+  opacity: 1;
+  transform: translateY(0);
+}

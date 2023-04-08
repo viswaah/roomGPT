@@ -1,5 +1,7 @@
 import Image from "next/image";
+import { useState } from "react";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 export default function Header({
   photo,
@@ -8,8 +10,9 @@ export default function Header({
   photo?: string;
   email?: string;
 }) {
+  const [showUserOption, setShowUserOption] = useState(false);
   return (
-    <header className="flex flex-col xs:flex-row justify-between items-center w-full mt-3 border-b pb-7 sm:px-4 px-2 border-gray-500 gap-2">
+    <header className="flex flex-row justify-between relative items-center w-full mt-3 border-b pb-7 sm:px-4 px-2 border-gray-500 gap-2">
       <Link href="/dream" className="flex space-x-2">
         <Image
           alt="header text"
@@ -18,38 +21,55 @@ export default function Header({
           width={24}
           height={24}
         />
-        <h1 className="sm:text-3xl text-xl font-bold ml-2 tracking-tight">
+        <h1 className="text-3xl font-bold ml-2 tracking-tight hidden sm:block">
           roomGPT.io
         </h1>
       </Link>
       {email ? (
         <div className="flex items-center space-x-4">
-          <Link
-            href="/dashboard"
-            className="border-r border-gray-300 pr-4 flex space-x-2 hover:text-blue-400 transition"
-          >
-            <div>Dashboard</div>
-          </Link>
-          <Link
-            href="/buy-credits"
-            className="border-r border-gray-300 pr-4 flex space-x-2 hover:text-blue-400 transition"
-          >
-            <div>Buy Credits</div>
-            <div className="text-blue-500 bg-blue-200 rounded-full px-2 text-xs flex justify-center items-center font-bold">
-              New
-            </div>
-          </Link>
+          <div className="md:flex items-center space-x-4 hidden">
+            <Link
+              href="/dashboard"
+              className="border-r border-gray-300 pr-4 flex space-x-2 hover:text-blue-400 transition"
+            >
+              <div>Dashboard</div>
+            </Link>
+            <Link
+              href="/buy-credits"
+              className="border-r border-gray-300 pr-4 flex space-x-2 hover:text-blue-400 transition"
+            >
+              <div>Buy Credits</div>
+              <div className="text-blue-500 bg-blue-200 rounded-full px-2 text-xs flex justify-center items-center font-bold">
+                New
+              </div>
+            </Link>
+          </div>
           {photo ? (
             <Image
               alt="Profile picture"
               src={photo}
-              className="w-10 rounded-full"
+              className="w-10 rounded-full cursor-pointer"
               width={32}
               height={28}
-            />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-white" />
+              onClick={() => setShowUserOption(!showUserOption)}
+              />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-white cursor-pointer" 
+                onClick={() => setShowUserOption(!showUserOption)}/>
           )}
+          <div className={"user-dropdown absolute right-4 top-11 w-40 mt-2 py-2 bg-[#17181C] border border-slate-400 rounded shadow-xl" + (showUserOption ? " show" : "")}>   
+          <Link
+              href="/dashboard"
+              className="block md:hidden transition-colors duration-200 px-4 py-2 text-normal text-gray-900 rounded hover:bg-blue-600 text-white"
+            >
+              Dashboard
+            </Link>
+          <Link
+              href="/buy-credits"
+              className="block md:hidden transition-colors duration-200 px-4 py-2 text-normal text-gray-900 rounded hover:bg-blue-600 text-white"
+            >Buy Credits</Link>
+            <a href="#" onClick={(e) => {e.preventDefault();signOut()}} className="transition-colors duration-200 block px-4 py-2 text-normal text-gray-900 rounded hover:bg-blue-600 text-white">Logout</a>
+          </div>
         </div>
       ) : (
         <Link
